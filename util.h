@@ -2,6 +2,6 @@
 #define UTIL_H
 
 typedef enum {OPERATOR, DOUBLE, FUNCTION} TYPE;
-int discriminate(char *s);
+TYPE discriminate(char *s);
 
 #endif

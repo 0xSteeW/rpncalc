@@ -24,9 +24,7 @@ int is_operator(char *s) {
 }
 
 TYPE discriminate(char *s) {
-  if (is_decimal(s)) {
-    return DOUBLE;
-  } else if (is_operator(s)) {
+  if (is_operator(s)) {
     return OPERATOR;
-  } else return INT;
+  } else return DOUBLE;
 }
