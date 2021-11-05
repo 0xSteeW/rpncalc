@@ -1,7 +1,9 @@
+#include <math.h>
 #include <stdio.h>
 #include "state.h"
 #include "util.h"
 #include <stdlib.h>
+#include <string.h>
 #include <err.h>
 
 #define BUF_SIZE 50
@@ -28,35 +30,47 @@ int main() {
   while(1){
     fprintf(s.defout, s.prompt, s.command_count, s.last_op);
     s.last_op = 0;
+    char *endptr = NULL;
     if (s.stack.count == STACK_SIZE) err(1, "exceeded stack size");
     fgets(buf, BUF_SIZE, s.defbuf);
-    TYPE t = discriminate(buf);
-    if (t == OPERATOR ) {
-      if (s.stack.count == 1) {
-	fprintf(s.defout, "not enough arguments\n");
-	continue;
+    buf[strcspn(buf, "\n")] = 0;
+    double interpreted = strtod(buf, &endptr);
+    if (interpreted == (double)0 && endptr == buf) { /* strtod returned the char it could not read */
+      TYPE t = discriminate(buf);
+      if (t == OPERATOR ) {
+	if (s.stack.count <= 1) {
+	  fprintf(s.defout, "not enough arguments\n");
+	  continue;
+	}
+	char operator = buf[0];
+	if (operator == '+') {
+	  s.stack.val[s.stack.count-2] = s.stack.val[s.stack.count-1]+s.stack.val[s.stack.count-2];
+	  s.stack.val[s.stack.count--] = 0; /* lower count by 1 */
+	  s.last_op = '+';
+	} else if (operator == '-') {
+	  s.stack.val[s.stack.count-2] = s.stack.val[s.stack.count-2]-s.stack.val[s.stack.count-1];
+	  s.stack.val[s.stack.count--] = 0; /* lower count by 1 */
+	  s.last_op = '-';
+	} else if (operator == '*') {
+	  s.stack.val[s.stack.count-2] = s.stack.val[s.stack.count-2]*s.stack.val[s.stack.count-1];
+	  s.stack.val[s.stack.count--] = 0; /* lower count by 1 */
+	  s.last_op = '*';
+	} else if (operator == '/') {
+	  s.stack.val[s.stack.count-2] = s.stack.val[s.stack.count-2]/s.stack.val[s.stack.count-1];
+	  s.stack.val[s.stack.count--] = 0; /* lower count by 1 */
+	  s.last_op = '/';
+	}
+      } else if (t == FUNCTION) {
+	if (strcmp(buf, "quit") == 0) {
+	  fprintf(s.defout, "quitting, bye!\n");
+	  exit(0);
+	} fprintf(s.defout, "unknown function %s\n", buf);
+	  continue;
       }
-      char operator = buf[0];
-      if (operator == '+') {
-	s.stack.val[s.stack.count-2] = s.stack.val[s.stack.count-1]+s.stack.val[s.stack.count-2];
-	s.stack.val[s.stack.count--] = 0; /* lower count by 1 */
-	s.last_op = '+';
-      } else if (operator == '-') {
-	s.stack.val[s.stack.count-2] = s.stack.val[s.stack.count-2]-s.stack.val[s.stack.count-1];
-	s.stack.val[s.stack.count--] = 0; /* lower count by 1 */
-	s.last_op = '-';
-      } else if (operator == '*') {
-	s.stack.val[s.stack.count-2] = s.stack.val[s.stack.count-2]*s.stack.val[s.stack.count-1];
-	s.stack.val[s.stack.count--] = 0; /* lower count by 1 */
-	s.last_op = '*';
-      } else if (operator == '/') {
-	s.stack.val[s.stack.count-2] = s.stack.val[s.stack.count-2]/s.stack.val[s.stack.count-1];
-	s.stack.val[s.stack.count--] = 0; /* lower count by 1 */
-	s.last_op = '/';
-      }
-    } else {
-      s.stack.val[s.stack.count++]=strtod(buf, NULL);
+    } else { /* we found a number */
+      s.stack.val[s.stack.count++] = interpreted;
     }
+    
     s.command_count++;
     for (int i = 0; i < s.stack.count; i++) {
       fprintf(s.defout,"%d → %f\n",i, s.stack.val[i]);

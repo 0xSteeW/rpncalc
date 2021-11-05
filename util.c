@@ -1,7 +1,8 @@
 #include "util.h"
 #include <math.h>
+#include <string.h>
 
-char OPERATOR_LIST[] = {
+const char OPERATOR_LIST[] = {
   '+',
   '-',
   '*',
@@ -9,12 +10,11 @@ char OPERATOR_LIST[] = {
   0
 };
 
-int is_decimal(char *s) {
-  for (int i = 0; s[i] != 0; i++) {
-    if (s[i] == ',' || s[i] == '.') return 1;
-  }
-  return 0;
-}
+const command COMMAND_LIST[] = {
+  {'c', "clear stack"},
+  {'p', "pop last element"},
+  {0, 0},
+};
 
 int is_operator(char *s) {
   for (int i = 0; OPERATOR_LIST[i] != 0; i++) {
@@ -26,5 +26,5 @@ int is_operator(char *s) {
 TYPE discriminate(char *s) {
   if (is_operator(s)) {
     return OPERATOR;
-  } else return DOUBLE;
+  } else return FUNCTION;
 }

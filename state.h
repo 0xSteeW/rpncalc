@@ -11,13 +11,23 @@ typedef struct {
 } stack;
 
 typedef struct {
+  char *name;
+  stack (*exec)(stack);
+  char *description;
+} command;
+
+typedef struct {
   int command_count;
   FILE *defbuf;
   FILE *defout;
   char last_op;
   char *prompt;
   stack stack;
+
+  /* btree elements */
   
+  char **sorted_names; /* sorted function names */
+  stack *((*exec)(stack)); /* sorted function calls, same order as above */
 } state;
 
 #endif
