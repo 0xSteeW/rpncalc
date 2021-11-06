@@ -37,7 +37,6 @@ int main() {
     fprintf(s.defout, s.prompt, s.command_count, s.last_op);
     s.last_op = 0;
     char *endptr = NULL;
-    if (s.stk.count == STACK_SIZE) errx(1, "exceeded stk size");
     fgets(buf, BUF_SIZE, s.defbuf);
     buf[strcspn(buf, "\n")] = 0;
     double interpreted = strtod(buf, &endptr);
@@ -84,6 +83,10 @@ int main() {
 	} else exec(buf, &s);
       }
     } else { /* we found a number */
+      if (s.stk.count == STACK_SIZE - 1) {
+	fprintf(s.defout, "exceeded stack size %d\n", STACK_SIZE);
+	continue;
+      }
       s.stk.val[s.stk.count++] = interpreted;
     }
     
