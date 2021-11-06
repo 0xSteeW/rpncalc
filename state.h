@@ -14,6 +14,7 @@ typedef struct {
   char *name;
   stack (*exec)(stack);
   char *description;
+  short int required_args;
 } command;
 
 typedef struct {

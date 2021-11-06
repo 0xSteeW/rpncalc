@@ -33,12 +33,12 @@ stack fpop(stack stack) {
 }
 
 command CMD_LIST[] = {
-  {"p", &fpop, "pop last element"},
-  {"ceil", &fceil, "truncate to the next integer"},
-  {"floor", &ffloor, "truncate to the previous integer"},
-  {"log", &flogB, "calculate logarithm in base LAST_NUM of LAST_NUM-1"},
-  {"neg", &fnegate, "change last element's sign"},
-  {0, 0, 0}
+  {"p", &fpop, "pop last element", 1},
+  {"ceil", &fceil, "truncate to the next integer", 1},
+  {"floor", &ffloor, "truncate to the previous integer", 1},
+  {"log", &flogB, "calculate logarithm in base LAST_NUM of LAST_NUM-1", 2},
+  {"neg", &fnegate, "change last element's sign", 1},
+  {0, 0, 0, 0}
 };
 
 void init_state(state *s) {
@@ -57,6 +57,10 @@ void exec(char *buf, state *s) {
   /* change this to a binary tree search */
   for (int i = 0; s->sorted[i].name != 0; i++) {
     if (strcmp(buf, s->sorted[i].name) == 0) {
+      if (s->sorted[i].required_args > s->stk.count) {
+	fprintf(s->defout,"this function requires %d arguments\n", s->sorted[i].required_args);
+	return;
+      }
       fprintf(s->defout, "executing function: %s\n", s->sorted[i].name);
       s->stk = s->sorted[i].exec(s->stk);
       return;

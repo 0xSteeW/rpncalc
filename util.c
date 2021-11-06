@@ -22,3 +22,4 @@ TYPE discriminate(char *s) {
     return OPERATOR;
   } else return FUNCTION;
 }
+

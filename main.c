@@ -6,6 +6,7 @@
 #include <string.h>
 #include "cmds.h"
 #include <err.h>
+#include <errno.h>
 
 #define BUF_SIZE 50
 
@@ -37,6 +38,10 @@ int main() {
     fgets(buf, BUF_SIZE, s.defbuf);
     buf[strcspn(buf, "\n")] = 0;
     double interpreted = strtod(buf, &endptr);
+    if (errno == ERANGE) {
+      fprintf(s.defout,"sorry, this number is too big\n");
+      continue;
+    }
     if (interpreted == (double)0 && endptr == buf) { /* strtod returned the char it could not read */
       TYPE t = discriminate(buf);
       if (t == OPERATOR ) {
@@ -66,6 +71,7 @@ int main() {
 	/* check for special commands, else pass to exec() */
 	if (strcmp(buf, "quit") == 0) {
 	  fprintf(s.defout, "quitting, bye!\n");
+	  free (s.sorted);
 	  exit(0);
 	} else if (strcmp(buf, "list") == 0) {
 	  for (int i = 0; s.sorted[i].name != 0; i++) {
