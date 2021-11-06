@@ -12,7 +12,6 @@
 
 /* rpncalc: a simple reverse polish notation calculator */
 int main() {
-  
   /* initialize state struct and its values */
   state s;
   /* default input buffer is stdin */
@@ -27,6 +26,10 @@ int main() {
   s.stk = stack;
   s.command_count = 0;
   init_state(&s);
+
+
+  fprintf(s.defout,"welcome to rpncalc! type 'list' to see a list of commands, or 'quit' to leave.\n");
+  
   
   /* start reading from defbuf */
   char buf[BUF_SIZE];
