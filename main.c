@@ -40,7 +40,6 @@ int main() {
     if (interpreted == (double)0 && endptr == buf) { /* strtod returned the char it could not read */
       TYPE t = discriminate(buf);
       if (t == OPERATOR ) {
-	printf("func\n");
 	if (s.stk.count <= 1) {
 	  fprintf(s.defout, "not enough arguments\n");
 	  continue;
@@ -64,13 +63,18 @@ int main() {
 	  s.last_op = '/';
 	} else;
       } else if (t == FUNCTION) {
+	/* check for special commands, else pass to exec() */
 	if (strcmp(buf, "quit") == 0) {
 	  fprintf(s.defout, "quitting, bye!\n");
 	  exit(0);
+	} else if (strcmp(buf, "list") == 0) {
+	  for (int i = 0; s.sorted[i].name != 0; i++) {
+	    fprintf(s.defout, "[%s]\t->\t%s\n", s.sorted[i].name, s.sorted[i].description);
+	    continue;
+	  }
 	} else exec(buf, &s);
       }
     } else { /* we found a number */
-      printf("number\n");
       s.stk.val[s.stk.count++] = interpreted;
     }
     
