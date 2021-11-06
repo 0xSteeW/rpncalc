@@ -38,33 +38,37 @@ command CMD_LIST[] = {
   {"floor", &ffloor, "truncate to the previous integer", 1},
   {"log", &flogB, "calculate logarithm in base LAST_NUM of LAST_NUM-1", 2},
   {"neg", &fnegate, "change last element's sign", 1},
-  {0, 0, 0, 0}
 };
 
+int compare(const void *s1, const void *s2) {
+  char *left = *(char **)s1;
+  char *right = *(char **)s2;
+  return strcmp(left, right);
+}
+
+int search(const void *s1, const void *s2) {
+  char *name = *(char **)s1;
+  command c = *(command *)s2;
+  return (strcmp(name, c.name));
+}
+
 void init_state(state *s) {
-  int numel = 0;
-  for (int i = 0; CMD_LIST[i].name != 0; i++) numel = i;
-  command *sorted = malloc(sizeof(command *)*numel);
-  if (sorted == NULL) err(1, "could not allocate function names");
-  /* todo: (merge, heap, quick) sort? */
-  for (int i = 0; CMD_LIST[i].name != 0; i++) {
-    sorted[i] = CMD_LIST[i];
-  }
-  s->sorted = sorted;
+  int numel = sizeof(CMD_LIST)/sizeof(CMD_LIST[0]);
+  qsort(&CMD_LIST, numel, sizeof(CMD_LIST[0]), compare);
+  s->sorted = CMD_LIST;
 }
 
 void exec(char *buf, state *s) {
-  /* change this to a binary tree search */
-  for (int i = 0; s->sorted[i].name != 0; i++) {
-    if (strcmp(buf, s->sorted[i].name) == 0) {
-      if (s->sorted[i].required_args > s->stk.count) {
-	fprintf(s->defout,"this function requires %d arguments\n", s->sorted[i].required_args);
-	return;
-      }
-      fprintf(s->defout, "executing function: %s\n", s->sorted[i].name);
-      s->stk = s->sorted[i].exec(s->stk);
-      return;
-    }
+  command *c = bsearch(&buf, s->sorted, sizeof(CMD_LIST)/sizeof(s->sorted[0]), sizeof(s->sorted[0]), search);
+  if (c == NULL) {
+    fprintf(s->defout, "error: function '%s' not found\n", buf);
+    return;
   }
-  fprintf(s->defout, "error: function '%s' not found\n", buf);
+  if (c->required_args > s->stk.count) {
+    fprintf(s->defout,"this function requires %d arguments\n", c->required_args);
+    return;
+  }
+  fprintf(s->defout, "executing function: %s\n", c->name);
+  s->stk = c->exec(s->stk);
+
 }
