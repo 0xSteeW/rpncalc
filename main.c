@@ -78,8 +78,8 @@ int main() {
 	} else if (strcmp(buf, "list") == 0) {
 	  for (int i = 0; i < s.numel; i++) {
 	    fprintf(s.defout, "[%s]\t->\t%s\n", s.sorted[i].name, s.sorted[i].description);
-	    continue;
 	  }
+	  continue;
 	} else exec(buf, &s);
       }
     } else { /* we found a number */
