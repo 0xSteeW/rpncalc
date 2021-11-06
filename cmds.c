@@ -6,29 +6,43 @@
 #include <err.h>
 #include <string.h>
 
+#define LAST stack.val[stack.count-1]
+#define PREV stack.val[stack.count-2]
+#define REDUCE stack.val[--stack.count] = 0
+
 stack fceil(stack stack) {
-  stack.val[stack.count-1] = ceil(stack.val[stack.count-1]);
+  LAST = ceil(PREV);
   return stack;
 }
 
 stack ffloor(stack stack) {
-  stack.val[stack.count-1] = floor(stack.val[stack.count-1]);
+  LAST = floor(LAST);
   return stack;
 }
 
 stack flogB(stack stack) {
-  stack.val[stack.count-2] = log2(stack.val[stack.count-2])/log2(stack.val[stack.count-1]);
-  stack.val[--stack.count] = 0;
+  PREV = log2(PREV)/log2(LAST);
+  REDUCE;
   return stack;
 }
 
 stack fnegate(stack stack) {
-  stack.val[stack.count-1] *= -1;
+  LAST *= -1;
   return stack;
 }
 
 stack fpop(stack stack) {
-  stack.val[--stack.count] = 0;
+  REDUCE;
+  return stack;
+}
+
+stack fsqrt(stack stack) {
+  LAST = sqrt(LAST);
+  return stack;
+}
+
+stack finv(stack stack) {
+  LAST = 1/LAST;
   return stack;
 }
 
@@ -36,8 +50,10 @@ command CMD_LIST[] = {
   {"p", &fpop, "pop last element", 1},
   {"ceil", &fceil, "truncate to the next integer", 1},
   {"floor", &ffloor, "truncate to the previous integer", 1},
-  {"log", &flogB, "calculate logarithm in base LAST_NUM of LAST_NUM-1", 2},
+  {"log", &flogB, "calculate logarithm using last element as a base and the previous as the argument", 2},
   {"neg", &fnegate, "change last element's sign", 1},
+  {"sqrt", &fsqrt, "calculate the square root", 1},
+  {"inv", &finv, "invert last number", 1},
 };
 
 int compare(const void *s1, const void *s2) {

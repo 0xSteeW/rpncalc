@@ -68,6 +68,10 @@ int main() {
 	  s.stk.val[s.stk.count-2] = s.stk.val[s.stk.count-2]/s.stk.val[s.stk.count-1];
 	  s.stk.val[s.stk.count--] = 0; /* lower count by 1 */
 	  s.last_op = '/';
+	} else if (operator == '^') {
+	  s.stk.val[s.stk.count-2] = pow(s.stk.val[s.stk.count-2],s.stk.val[s.stk.count-1]);
+	  s.stk.val[s.stk.count--] = 0; /* lower count by 1 */
+	  s.last_op = '^';
 	} else;
       } else if (t == FUNCTION) {
 	/* check for special commands, else pass to exec() */

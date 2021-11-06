@@ -7,6 +7,7 @@ const char OPERATOR_LIST[] = {
   '-',
   '*',
   '/',
+  '^',
   0
 };
 
