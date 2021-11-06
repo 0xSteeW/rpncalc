@@ -26,6 +26,7 @@ typedef struct {
   stack stk;
   /* btree elements */
   command *sorted; /* sorted by function name */
+  int numel;
 } state;
 
 #endif

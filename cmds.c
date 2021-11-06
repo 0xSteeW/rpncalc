@@ -55,6 +55,7 @@ int search(const void *s1, const void *s2) {
 void init_state(state *s) {
   int numel = sizeof(CMD_LIST)/sizeof(CMD_LIST[0]);
   qsort(&CMD_LIST, numel, sizeof(CMD_LIST[0]), compare);
+  s->numel = numel;
   s->sorted = CMD_LIST;
 }
 

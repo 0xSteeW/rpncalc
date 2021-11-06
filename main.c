@@ -37,7 +37,7 @@ int main() {
     fprintf(s.defout, s.prompt, s.command_count, s.last_op);
     s.last_op = 0;
     char *endptr = NULL;
-    if (s.stk.count == STACK_SIZE) err(1, "exceeded stk size");
+    if (s.stk.count == STACK_SIZE) errx(1, "exceeded stk size");
     fgets(buf, BUF_SIZE, s.defbuf);
     buf[strcspn(buf, "\n")] = 0;
     double interpreted = strtod(buf, &endptr);
@@ -77,7 +77,7 @@ int main() {
 	  free (s.sorted);
 	  exit(0);
 	} else if (strcmp(buf, "list") == 0) {
-	  for (int i = 0; s.sorted[i].name != 0; i++) {
+	  for (int i = 0; i < s.numel; i++) {
 	    fprintf(s.defout, "[%s]\t->\t%s\n", s.sorted[i].name, s.sorted[i].description);
 	    continue;
 	  }
