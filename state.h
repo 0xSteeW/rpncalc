@@ -22,12 +22,9 @@ typedef struct {
   FILE *defout;
   char last_op;
   char *prompt;
-  stack stack;
-
+  stack stk;
   /* btree elements */
-  
-  char **sorted_names; /* sorted function names */
-  stack *((*exec)(stack)); /* sorted function calls, same order as above */
+  command *sorted; /* sorted by function name */
 } state;
 
 #endif

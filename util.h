@@ -3,9 +3,4 @@
 
 typedef enum {OPERATOR, COMMAND ,DOUBLE, FUNCTION} TYPE;
 TYPE discriminate(char *s);
-typedef struct {
-  char n;
-  const char* desc;
-} command;
-  
 #endif
