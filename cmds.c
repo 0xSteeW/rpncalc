@@ -9,6 +9,7 @@
 #define LAST stack.val[stack.count-1]
 #define PREV stack.val[stack.count-2]
 #define REDUCE stack.val[--stack.count] = 0
+#define NEW stack.val[stack.count++]
 
 stack fceil(stack stack) {
   LAST = ceil(LAST);
@@ -46,14 +47,38 @@ stack finv(stack stack) {
   return stack;
 }
 
+stack fpi(stack stack) {
+  NEW = M_PI;
+  return stack;
+}
+
+stack fe(stack stack) {
+  NEW = M_E;
+  return stack;
+}
+
+stack fsin(stack stack) {
+  LAST = sin(LAST);
+  return stack;
+}
+
+stack fcos(stack stack) {
+  LAST = cos(LAST);
+  return stack;
+}
+
 command CMD_LIST[] = {
-  {"p", &fpop, "pop last element", 1},
   {"ceil", &fceil, "truncate to the next integer", 1},
+  {"cos", &fcos, "calculate the cosine", 1},
+  {"e", &fe, "return number e", 0},
   {"floor", &ffloor, "truncate to the previous integer", 1},
+  {"inv", &finv, "invert last number", 1},
   {"log", &flogB, "calculate logarithm using last element as a base and the previous as the argument", 2},
   {"neg", &fnegate, "change last element's sign", 1},
+  {"p", &fpop, "pop last element", 1},
+  {"pi", &fpi, "return number pi", 0},
+  {"sin", &fsin, "calculate the sine", 1},
   {"sqrt", &fsqrt, "calculate the square root", 1},
-  {"inv", &finv, "invert last number", 1},
 };
 
 int compare(const void *s1, const void *s2) {
