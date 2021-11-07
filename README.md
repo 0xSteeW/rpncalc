@@ -13,4 +13,8 @@ To execute:
 ```sh
 ./rpncalc
 ```
-Installation will be possible in future releases
+Installation (inside build dir):
+```sh
+# needs root perms
+sudo ninja install # alternatively: sudo samu install if you are using samurai
+```
