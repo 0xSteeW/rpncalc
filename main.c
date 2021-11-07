@@ -37,7 +37,8 @@ int main() {
     fprintf(s.defout, s.prompt, s.command_count, s.last_op);
     s.last_op = 0;
     char *endptr = NULL;
-    fgets(buf, BUF_SIZE, s.defbuf);
+    char *check = fgets(buf, BUF_SIZE, s.defbuf);
+    if (check == NULL) exit(0);
     buf[strcspn(buf, "\n")] = 0;
     double interpreted = strtod(buf, &endptr);
     if (errno == ERANGE) {
