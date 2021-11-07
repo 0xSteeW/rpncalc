@@ -11,7 +11,7 @@
 #define REDUCE stack.val[--stack.count] = 0
 
 stack fceil(stack stack) {
-  LAST = ceil(PREV);
+  LAST = ceil(LAST);
   return stack;
 }
 
@@ -76,7 +76,7 @@ void init_state(state *s) {
 }
 
 void exec(char *buf, state *s) {
-  command *c = bsearch(&buf, s->sorted, sizeof(CMD_LIST)/sizeof(s->sorted[0]), sizeof(s->sorted[0]), search);
+  command *c = bsearch(&buf, s->sorted, s->numel, sizeof(s->sorted[0]), search);
   if (c == NULL) {
     fprintf(s->defout, "error: function '%s' not found\n", buf);
     return;
