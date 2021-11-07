@@ -77,7 +77,6 @@ int main() {
 	/* check for special commands, else pass to exec() */
 	if (strcmp(buf, "quit") == 0) {
 	  fprintf(s.defout, "quitting, bye!\n");
-	  free (s.sorted);
 	  exit(0);
 	} else if (strcmp(buf, "list") == 0) {
 	  for (int i = 0; i < s.numel; i++) {
@@ -99,7 +98,5 @@ int main() {
       fprintf(s.defout,"%d → %f\n",i, s.stk.val[i]);
     }
   }
-  /* free stuff */
-  free (s.sorted);
 }
 
