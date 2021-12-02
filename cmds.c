@@ -67,7 +67,42 @@ stack fcos(stack stack) {
   return stack;
 }
 
+stack fadd(stack stack) {
+  PREV = LAST + PREV;
+  REDUCE;
+  return stack;
+}
+
+stack fsub(stack stack) {
+  PREV = PREV - LAST;
+  REDUCE;
+  return stack;
+}
+
+stack fmul(stack stack) {
+  PREV = PREV*LAST;
+  REDUCE;
+  return stack;
+}
+
+stack fdiv(stack stack) {
+  PREV = PREV / LAST;
+  REDUCE;
+  return stack;
+}
+
+stack fpow(stack stack) {
+  PREV = pow(PREV, LAST);
+  REDUCE;
+  return stack;
+}
+
 command CMD_LIST[] = {
+  {"*", &fmul, "multiply last two numbers", 2},
+  {"+", &fadd, "add last two numbers", 2},
+  {"-", &fsub, "substract last two numbers", 2},
+  {"/", &fdiv, "divide last two numbers", 2},
+  {"^", &fpow, "power last two numbers", 2},
   {"ceil", &fceil, "truncate to the next integer", 1},
   {"cos", &fcos, "calculate the cosine", 1},
   {"e", &fe, "return number e", 0},
@@ -100,17 +135,22 @@ void init_state(state *s) {
   s->sorted = CMD_LIST;
 }
 
-void exec(char *buf, state *s) {
+/*
+exec tries to find a function name matching the one provided in buf. If it
+fails to find one, it returns -2. If it finds one, but number of arguments in
+the stack is less than the specified limit, it returns the number of arguments
+needed. If it succeeds, it returns -1, in order not to conflict with the integer
+returned when an incorrect number of arguments have been passed.
+*/
+int exec(char *buf, state *s) {
   command *c = bsearch(&buf, s->sorted, s->numel, sizeof(s->sorted[0]), search);
   if (c == NULL) {
-    fprintf(s->defout, "error: function '%s' not found\n", buf);
-    return;
+    return -2; // not found
   }
   if (c->required_args > s->stk.count) {
-    fprintf(s->defout,"this function requires %d arguments\n", c->required_args);
-    return;
+    return c->required_args; // return number of required arguments
   }
   fprintf(s->defout, "executing function: %s\n", c->name);
   s->stk = c->exec(s->stk);
-
+  return -1; // no error
 }
