@@ -97,7 +97,13 @@ stack fpow(stack stack) {
   return stack;
 }
 
+stack frepeat(stack stack) {
+  NEW = LAST;
+  return stack;
+}
+
 command CMD_LIST[] = {
+  {"", &frepeat, "repeat last element", 1},
   {"*", &fmul, "multiply last two numbers", 2},
   {"+", &fadd, "add last two numbers", 2},
   {"-", &fsub, "substract last two numbers", 2},
